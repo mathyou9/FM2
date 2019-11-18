@@ -1,0 +1,37 @@
+CREATE TABLE "AuthorizationTokens" (
+	"AuthorizationToken"	TEXT NOT NULL UNIQUE,
+	"UserName"	TEXT NOT NULL,
+	PRIMARY KEY("AuthorizationToken")
+)
+CREATE TABLE "Events" (
+	"EventID"	TEXT NOT NULL UNIQUE,
+	"AssociatedUsername"	TEXT NOT NULL,
+	"PersonID"	TEXT NOT NULL,
+	"Latitude"	NUMERIC NOT NULL,
+	"Longitude"	NUMERIC NOT NULL,
+	"Country"	TEXT NOT NULL,
+	"City"	TEXT NOT NULL,
+	"EventType"	TEXT NOT NULL,
+	"Year"	INTEGER NOT NULL,
+	PRIMARY KEY("EventID")
+)
+CREATE TABLE "Persons" (
+	"PersonID"	TEXT NOT NULL UNIQUE,
+	"AssociatedUsername"	TEXT NOT NULL,
+	"FirstName"	TEXT NOT NULL,
+	"LastName"	TEXT NOT NULL,
+	"Gender"	TEXT NOT NULL,
+	"FatherID"	TEXT,
+	"MotherID"	TEXT,
+	"SpouseID"	TEXT,
+	PRIMARY KEY("PersonID")
+)
+CREATE TABLE "Users" (
+	"UserName"	TEXT NOT NULL UNIQUE,
+	"Password"	TEXT NOT NULL,
+	"Email"	TEXT NOT NULL,
+	"FirstName"	TEXT NOT NULL,
+	"LastName"	TEXT NOT NULL,
+	"Gender"	TEXT NOT NULL,
+	"PersonID"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE
+)
