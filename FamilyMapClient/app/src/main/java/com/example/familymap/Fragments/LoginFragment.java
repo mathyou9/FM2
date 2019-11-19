@@ -3,6 +3,8 @@ package com.example.familymap.Fragments;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.UserManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,11 +53,53 @@ public class LoginFragment extends Fragment {
         signIn = view.findViewById(R.id.SignInButton);
         registerB = view.findViewById(R.id.RegisterButton);
 
+        signIn.setEnabled(false);
+        registerB.setEnabled(false);
+
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(host.getText().toString().equals("") || port.getText().toString().equals("") || username.getText().toString().equals("") || password.getText().toString().equals("")){
+                    signIn.setEnabled(false);
+                } else {
+                    signIn.setEnabled(true);
+                }
+                if(host.getText().toString().equals("") || port.getText().toString().equals("") || username.getText().toString().equals("") || password.getText().toString().equals("") || firstName.getText().toString().equals("") || lastName.getText().toString().equals("") || email.getText().toString().equals("")){
+                    registerB.setEnabled(false);
+                } else {
+                    registerB.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+
+        username.addTextChangedListener(textWatcher);
+        password.addTextChangedListener(textWatcher);
+        host.addTextChangedListener(textWatcher);
+        port.addTextChangedListener(textWatcher);
+        firstName.addTextChangedListener(textWatcher);
+        lastName.addTextChangedListener(textWatcher);
+        email.addTextChangedListener(textWatcher);
+        male.addTextChangedListener(textWatcher);
+        female.addTextChangedListener(textWatcher);
+
         signIn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 String hostSubmit = host.getText().toString();
                 String portSubmit = port.getText().toString();
+
+                ServerConnection connection = ServerConnection.getConnection();
+                connection.setHost(hostSubmit);
+                connection.setPort(Integer.valueOf(portSubmit));
 
                 String usernameSubmit = username.getText().toString();
                 String passwordSubmit = password.getText().toString();
@@ -66,10 +110,9 @@ public class LoginFragment extends Fragment {
 
                 User_Model user = new User_Model(loginRequest);
 
-                ServerConnection connection = new ServerConnection();
-                connection.setHost(hostSubmit);
-                connection.setPort(Integer.valueOf(portSubmit));
-                connection.Login(user);
+                SignIn signIn = new SignIn();
+                signIn.execute(user);
+
                 System.out.println("got here");
             }
         });
@@ -111,13 +154,13 @@ public class LoginFragment extends Fragment {
     private class SignIn extends AsyncTask<User_Model, Void, Object[]> {
         @Override
         protected void onPostExecute(Object[] objects) {
-            super.onPostExecute(objects);
+
+            Toast.makeText(getContext(), objects[1].toString(), Toast.LENGTH_SHORT).show();
         }
 
         @Override
         protected Object[] doInBackground(User_Model... user_models) {
-            ServerConnection serverConnection = new ServerConnection();
-            return serverConnection.Login(user_models[0]);
+            return ServerConnection.Login(user_models[0]);
         }
     }
     private class Register extends AsyncTask<User_Model, Void, Object[]>{

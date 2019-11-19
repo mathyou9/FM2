@@ -5,7 +5,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="25dp">
+        android:layout_height="100dp">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -28,7 +28,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="localhost" />
+            android:text="10.0.2.2" />
 
     </LinearLayout>
 
@@ -182,6 +182,7 @@
                 android:id="@+id/MaleRadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="Male" />
 
             <RadioButton
