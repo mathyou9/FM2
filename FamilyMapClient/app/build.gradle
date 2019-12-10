@@ -30,4 +30,5 @@ dependencies {
     implementation files('libs/gson-2.6.2.jar')
     implementation files('libs/json-20160212.jar')
     implementation files('libs/sqlite-jdbc-3.28.0.jar')
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 }

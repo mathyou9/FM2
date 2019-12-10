@@ -14,6 +14,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.familymap.Models.User_Model;
 import com.example.familymap.R;
@@ -156,6 +157,10 @@ public class LoginFragment extends Fragment {
         protected void onPostExecute(Object[] objects) {
 
             Toast.makeText(getContext(), objects[1].toString(), Toast.LENGTH_SHORT).show();
+            FragmentManager  fragmentManager = getActivity().getSupportFragmentManager();
+            Fragment fragment = fragmentManager.findFragmentById(R.id.mainFrame);
+            Fragment mapFragment = new MapsFragment();
+            fragmentManager.beginTransaction().replace(R.id.mainFrame, mapFragment).commit();
         }
 
         @Override

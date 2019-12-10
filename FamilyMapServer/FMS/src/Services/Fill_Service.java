@@ -118,8 +118,8 @@ public class Fill_Service {
         String EventID = UUID.randomUUID().toString().substring(0,8);
         String AssociatedUsername = person.getAssociatedUsername();
         String PersonID = person.getPersonID();
-        int Latitude = 100;
-        int Longitude = 100;
+        int Latitude = 52;
+        int Longitude = 52;
         String Country = "United States";
         String City = "Provo";
         String EventType = "Birth";
@@ -132,8 +132,8 @@ public class Fill_Service {
         String EventID = UUID.randomUUID().toString().substring(0,8);
         String AssociatedUsername = person.getAssociatedUsername();
         String PersonID = person.getPersonID();
-        int Latitude = 100;
-        int Longitude = 100;
+        int Latitude = 48;
+        int Longitude = 48;
         String Country = "United States";
         String City = "Provo";
         String EventType = "Marriage";
@@ -146,8 +146,8 @@ public class Fill_Service {
         String EventID = UUID.randomUUID().toString().substring(0,8);
         String AssociatedUsername = person.getAssociatedUsername();
         String PersonID = person.getPersonID();
-        int Latitude = 100;
-        int Longitude = 100;
+        int Latitude = 48;
+        int Longitude = 48;
         String Country = "United States";
         String City = "Provo";
         String EventType = "Death";

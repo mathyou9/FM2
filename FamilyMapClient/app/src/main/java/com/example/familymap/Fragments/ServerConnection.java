@@ -1,36 +1,24 @@
 package com.example.familymap.Fragments;
 
 import android.os.AsyncTask;
-import android.os.Build;
 
-import androidx.annotation.RequiresApi;
-
+import com.example.familymap.Models.DataCache;
 import com.example.familymap.Models.Event_Model;
 import com.example.familymap.Models.Person_Model;
 import com.example.familymap.Models.User_Model;
 import com.example.familymap.Requests.Login_Request;
 import com.example.familymap.Results.Event_Results;
-import com.example.familymap.Results.Login_Results;
 import com.example.familymap.Results.Person_Results;
 import com.example.familymap.Results.Register_Results;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 
 public class ServerConnection extends AsyncTask<URL, Integer, Long> {
     private static String host;

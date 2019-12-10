@@ -85,8 +85,8 @@ public class Register_Service {
         String EventID = UUID.randomUUID().toString().substring(0,8);
         String AssociatedUsername = user.getUserName();
         String PersonID = user.getPersonID();
-        int Latitude = 100;
-        int Longitude = 100;
+        int Latitude = 50;
+        int Longitude = 50;
         String Country = "United States";
         String City = "Provo";
         String EventType = "Birth";
