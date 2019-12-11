@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.familymap.Models.Person_Model;
@@ -77,11 +78,24 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        return null;
+        if (convertView == null){
+            LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+        String top = getChild(groupPosition, childPosition).toString();
+
+        ImageView imageView = convertView.findViewById(R.id.);
+        if(getChild(groupPosition, childPosition).toString().contains("Spouse") || getChild(groupPosition, childPosition).toString().contains("Child")){
+            imageView.setImageDrawable(imageView.getResources().getDrawable(R.drawable.androidwhite));
+        } else {
+            imageView.setImageDrawable(imageView.getResources().getDrawable(R.drawable.pin));
+        }
+        TextView topText = convertView.findViewById(R.id.);
+        topText.setText(top);
+        return convertView;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
+        return true;
     }
 }
