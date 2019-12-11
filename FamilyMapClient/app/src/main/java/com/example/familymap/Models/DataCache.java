@@ -39,7 +39,7 @@ public class DataCache {
         this.port = port;
         for(Event_Model event : events){
             mapOfEvents.put(event.getEventID(), event);
-            eventTypes.add(event.getEventType());
+            eventTypes.add(event.getEventType().toUpperCase());
         }
         for(Person_Model person : persons){
             mapOfPersons.put(person.getPersonID(), person);

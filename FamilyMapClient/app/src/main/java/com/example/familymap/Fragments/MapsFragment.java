@@ -2,16 +2,21 @@ package com.example.familymap.Fragments;
 
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.familymap.Activities.PersonActivity;
+import com.example.familymap.Activities.SettingsActivity;
 import com.example.familymap.Models.DataCache;
 import com.example.familymap.Models.Event_Model;
+import com.example.familymap.Models.Person_Model;
 import com.example.familymap.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,19 +42,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private float[] MARKERS = new float[]{
             BitmapDescriptorFactory.HUE_AZURE,
-            BitmapDescriptorFactory.HUE_YELLOW,
-            BitmapDescriptorFactory.HUE_ROSE,
             BitmapDescriptorFactory.HUE_BLUE,
-            BitmapDescriptorFactory.HUE_VIOLET,
-            BitmapDescriptorFactory.HUE_ORANGE,
             BitmapDescriptorFactory.HUE_CYAN,
             BitmapDescriptorFactory.HUE_GREEN,
+            BitmapDescriptorFactory.HUE_MAGENTA,
+            BitmapDescriptorFactory.HUE_ORANGE,
             BitmapDescriptorFactory.HUE_RED,
-            BitmapDescriptorFactory.HUE_MAGENTA
+            BitmapDescriptorFactory.HUE_ROSE,
+            BitmapDescriptorFactory.HUE_VIOLET,
+            BitmapDescriptorFactory.HUE_YELLOW,
     };
 
     private TextView eventDetails;
     private ImageView imageDetails;
+    private LinearLayout eventLinearLayout;
+
+    Event_Model currentEvent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +83,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         supportMapFragment.getMapAsync(this);
         eventDetails = view.findViewById(R.id.mapFragmentTextView);
         imageDetails = view.findViewById(R.id.mapFragmentImageView);
+        eventLinearLayout = view.findViewById(R.id.eventLinearLayout);
 
         return view;
     }
@@ -88,17 +97,40 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     .position(location)
                     .title(event.getValue().getEventType())
                     .draggable(false)
-                    .icon(BitmapDescriptorFactory.defaultMarker(MARKERS[eventTypes.indexOf(event.getValue().getEventType())%10])));
+                    .icon(BitmapDescriptorFactory.defaultMarker(MARKERS[eventTypes.indexOf(event.getValue().getEventType().toUpperCase())%10])));
+            marker.setTag(event.getValue().getEventID());
         }
         map.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 System.out.println("clicked");
-                eventDetails.setText("Clicked " + marker.getTitle());
+                currentEvent = DataCache.getInstance().getEvents((String)marker.getTag());
+                eventDetails.setText(textForMapFragment(currentEvent));
+                if(DataCache.getInstance().getPerson(currentEvent.getPersonID()).getGender().equals("m")){
+                    imageDetails.setImageDrawable(getResources().getDrawable(R.drawable.boy));
+                } else {
+                    imageDetails.setImageDrawable(getResources().getDrawable(R.drawable.girl));
+                }
                 return false;
             }
         });
+        eventLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(getActivity(), PersonActivity.class);
+                intent.putExtra("PersonID", currentEvent.getPersonID());
+                startActivity(intent);
+            }
+        });
+
+    }
+    private String textForMapFragment(Event_Model event){
+        StringBuilder sb = new StringBuilder();
+        Person_Model person = DataCache.getInstance().getPerson(event.getPersonID());
+        sb.append(person.getFirstName() + " " + person.getLastName() + '\n');
+        sb.append(event.getEventType() + ": " + event.getCity() + ", " + event.getCountry() + " (" + event.getYear() + ")");
+        return sb.toString();
     }
 
 
