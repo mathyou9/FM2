@@ -27,7 +27,7 @@ public class ServerConnection extends AsyncTask<URL, Integer, Long> {
     private static String base;
     private Login_Request loginResults;
 
-
+    //write a pass and a fail
 
     public ServerConnection(){
 

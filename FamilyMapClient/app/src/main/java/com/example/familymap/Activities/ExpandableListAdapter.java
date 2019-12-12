@@ -68,9 +68,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         String headerTitle = (String) getGroup(groupPosition);
         if(convertView == null){
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.)
+            convertView = inflater.inflate(R.layout.expandable_list_group_header, null);
         }
-        TextView header = convertView.findViewById(R.id.);
+        TextView header = convertView.findViewById(R.id.headerTextView);
         header.setTypeface(null, Typeface.BOLD);
         header.setText(headerTitle);
         return convertView;
@@ -80,16 +80,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if (convertView == null){
             LayoutInflater inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.expandable_list_child, null);
         }
         String top = getChild(groupPosition, childPosition).toString();
 
-        ImageView imageView = convertView.findViewById(R.id.);
+        ImageView imageView = convertView.findViewById(R.id.childImageView);
         if(getChild(groupPosition, childPosition).toString().contains("Spouse") || getChild(groupPosition, childPosition).toString().contains("Child")){
             imageView.setImageDrawable(imageView.getResources().getDrawable(R.drawable.androidwhite));
         } else {
             imageView.setImageDrawable(imageView.getResources().getDrawable(R.drawable.pin));
         }
-        TextView topText = convertView.findViewById(R.id.);
+        TextView topText = convertView.findViewById(R.id.childTextView);
         topText.setText(top);
         return convertView;
     }
