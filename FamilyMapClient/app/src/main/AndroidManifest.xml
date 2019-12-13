@@ -19,9 +19,27 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activities.SearchActivity"></activity>
-        <activity android:name=".Activities.EventActivity" />
-        <activity android:name=".Activities.PersonActivity" />
+        <activity android:name=".Activities.SearchActivity"
+            android:label="Search"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name=".android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"></meta-data>
+        </activity>
+        <activity android:name=".Activities.EventActivity"
+            android:label="Event"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name=".android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"></meta-data>
+        </activity>
+        <activity android:name=".Activities.PersonActivity"
+            android:label="Person"
+            android:parentActivityName=".MainActivity">
+        <meta-data
+            android:name=".android.support.PARENT_ACTIVITY"
+            android:value=".MainActivity"></meta-data>
+        </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -47,7 +65,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.SettingsActivity" />
+        <activity android:name=".Activities.SettingsActivity"
+            android:label="Settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name=".android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"></meta-data>
+        </activity>
     </application>
 
 </manifest>

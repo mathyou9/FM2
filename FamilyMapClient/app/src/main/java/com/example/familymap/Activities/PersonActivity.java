@@ -48,7 +48,7 @@ public class PersonActivity extends AppCompatActivity {
         firstName = findViewById(R.id.firstNameTextView);
         lastName = findViewById(R.id.lastNameTextView);
         gender = findViewById(R.id.genderTextView);
-        personID = getIntent().getStringExtra("PersonID");
+        personID = getIntent().getStringExtra(PERSON_ACTIVITY_ID);
         person = DataCache.getInstance().getPerson(personID);
         firstName.setText(person.getFirstName());
         lastName.setText(person.getLastName());
@@ -67,18 +67,18 @@ public class PersonActivity extends AppCompatActivity {
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 if (groupPosition == 0) {
                     Intent intent = new Intent(PersonActivity.this, EventActivity.class);
-                    intent.putExtra("EventID", events[childPosition].getEventID());
+                    intent.putExtra(EventActivity.EVENT_ACTIVITY_ID, events[childPosition].getEventID());
                     startActivity(intent);
                 }
                 if (groupPosition == 1) {
                     if (childPosition == 0) {
                         Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
-                        intent.putExtra("PersonID", spouse.getPersonID());
+                        intent.putExtra(PersonActivity.PERSON_ACTIVITY_ID, spouse.getPersonID());
                         startActivity(intent);
                     }
                     else {
                         Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
-                        intent.putExtra("PersonID", child.getPersonID());
+                        intent.putExtra(PersonActivity.PERSON_ACTIVITY_ID, child.getPersonID());
                         startActivity(intent);
                     }
                 }

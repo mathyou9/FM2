@@ -6,6 +6,9 @@ import android.os.Bundle;
 import com.example.familymap.Activities.SearchActivity;
 import com.example.familymap.Fragments.LoginFragment;
 import com.example.familymap.Activities.SettingsActivity;
+import com.example.familymap.Fragments.MapsFragment;
+import com.example.familymap.Models.DataCache;
+import com.example.familymap.Models.Person_Model;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -22,14 +25,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Person_Model user = DataCache.getInstance().getUser();
+        if(user == null){
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            Fragment fragment = fragmentManager.findFragmentById(R.id.mainFrame);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.mainFrame);
+            if(fragment == null){
+                fragment = new LoginFragment();
+                fragmentManager.beginTransaction().add(R.id.mainFrame, fragment).commit();
+            }
+        } else {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            Fragment fragment = fragmentManager.findFragmentById(R.id.mainFrame);
 
-        if(fragment == null){
-            fragment = new LoginFragment();
-            fragmentManager.beginTransaction().add(R.id.mainFrame, fragment).commit();
+            if(fragment == null){
+                fragment = new MapsFragment();
+                fragmentManager.beginTransaction().add(R.id.mainFrame, fragment).commit();
+            }
         }
+
 
     }
 

@@ -2,6 +2,7 @@ package com.example.familymap.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -19,7 +20,9 @@ import com.example.familymap.Models.Person_Model;
 import com.example.familymap.Models.Settings_Model;
 import com.example.familymap.R;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -34,7 +37,26 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         DataCache.getInstance().fromSettings(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        searchView = findViewById(R.id.searchView);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        searchAdapter = new SearchAdapter(new ArrayList<SearchResult>());
+        recyclerView.setAdapter(searchAdapter);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //returns filtered search results.
+                searchAdapter.setSearchResults(DataCache.getInstance().getSearchResults(query));
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String text) {
+                return false;
+            }
+        });
     }
     private class SearchAdapter extends RecyclerView.Adapter<SearchHolder>{
 
@@ -46,14 +68,6 @@ public class SearchActivity extends AppCompatActivity {
         void setSearchResults(List<SearchResult> searchResults) {
             this.searchResults = searchResults;
             notifyDataSetChanged();
-        }
-
-        @NonNull
-        @Override
-        public SearchHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(SearchActivity.this)
-                    .inflate(R.layout.expandable_list_child, parent, false);
-            return new SearchHolder(view);
         }
 
         @Override
@@ -98,10 +112,19 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
 
+        @NonNull
+        @Override
+        public SearchHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(SearchActivity.this)
+                    .inflate(R.layout.expandable_list_child, parent, false);
+            return new SearchHolder(view);
+        }
+
         @Override
         public int getItemCount() {
-            return 0;
+            return searchResults.size();
         }
+
         private void setInfoByGender(SearchHolder itemHolder,Person_Model p, Event_Model e) {
             if (Settings_Model.getInstance().isFemaleEvents() && p.getGender().equals("f")) {
                 String eventText = e.getEventType().toUpperCase() + ": " + e.getCity() +
@@ -138,7 +161,7 @@ public class SearchActivity extends AppCompatActivity {
                         intent.putExtra(PersonActivity.PERSON_ACTIVITY_ID, personID);
                     } else {
                         intent = new Intent(SearchActivity.this, EventActivity.class);
-                        intent.putExtra(PersonActivity.PERSON_ACTIVITY_ID, activityID);
+                        intent.putExtra(EventActivity.EVENT_ACTIVITY_ID, activityID);
                     }
                     startActivity(intent);
                 }

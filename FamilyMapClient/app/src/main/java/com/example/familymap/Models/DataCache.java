@@ -1,5 +1,7 @@
 package com.example.familymap.Models;
 
+import com.example.familymap.Activities.SearchActivity;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -129,7 +131,7 @@ public class DataCache {
     public ArrayList<String> getMothersSideIDs() {
         return motherSideIDs;
     }
-    void setMaternalSide(ArrayList<String> momSideIDs) {
+    public void setMotherSideIDs(ArrayList<String> momSideIDs) {
         this.motherSideIDs = momSideIDs;
 
     }
@@ -137,8 +139,47 @@ public class DataCache {
     public ArrayList<String> getFatherSideIDs() {
         return fatherSideIDs;
     }
-    void setFatherSideIDs(ArrayList<String> fatherSideIDs) {
+    public void setFatherSideIDs(ArrayList<String> fatherSideIDs) {
         this.fatherSideIDs = fatherSideIDs;
 
+    }
+
+    public ArrayList<SearchActivity.SearchResult> getSearchResults(String query) {
+        String q = query.trim().toLowerCase();
+        ArrayList<SearchActivity.SearchResult> results = new ArrayList<>();
+        //search all people for names
+        for (Person_Model p : personArray) {
+            String last = p.getLastName().toLowerCase();
+            String first = p.getFirstName().toLowerCase();
+            if (first.contains(q) || last.contains(q)) {
+                results.add(new SearchActivity.SearchResult(true, p.getPersonID()));
+            }
+        }
+        //search all events for names
+        for (Event_Model e : eventArray) {
+            Person_Model p = getPerson(e.getPersonID());
+            String last = p.getLastName().toLowerCase();
+            String first = p.getFirstName().toLowerCase();
+            if (first.contains(query.toLowerCase()) || last.contains(query.toLowerCase())) {
+                results.add(new SearchActivity.SearchResult(false, e.getEventID()));
+            }
+        }
+        return results;
+    }
+
+
+    public void logout(){
+        mapOfPersons = null;
+        mapOfEvents = null;
+        personsEvents = null;
+        eventTypes = null;
+        host = null;
+        port = 0;
+        personArray = null;
+        eventArray = null;
+        user = null;
+
+        motherSideIDs = null;
+        fatherSideIDs = null;
     }
 }

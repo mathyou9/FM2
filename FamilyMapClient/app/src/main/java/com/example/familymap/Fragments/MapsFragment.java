@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.familymap.Activities.PersonActivity;
-import com.example.familymap.Activities.SettingsActivity;
 import com.example.familymap.Models.DataCache;
 import com.example.familymap.Models.Event_Model;
 import com.example.familymap.Models.Person_Model;
@@ -28,7 +27,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +57,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private LinearLayout eventLinearLayout;
     private String eventID;
     private boolean fromEvent;
-    private ArrayList<String> dadSideIDs = new ArrayList<>();
-    private ArrayList<String> momSideIDs = new ArrayList<>();
+    private ArrayList<String> fathersSideIDs = new ArrayList<>();
+    private ArrayList<String> mothersSideIDs = new ArrayList<>();
     private Person_Model user = null;
 
     Event_Model currentEvent;
@@ -72,6 +70,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         DataCache.getInstance().setPersonsEvents();
         findMothersSide(user.getMotherID());
         findFathersSide(user.getMotherID());
+        DataCache.getInstance().setMotherSideIDs(mothersSideIDs);
+        DataCache.getInstance().setFatherSideIDs(fathersSideIDs);
     }
 
 
@@ -99,6 +99,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     }
     @Override
     public void onMapReady(GoogleMap map) {
+        final GoogleMap gmap = map;
         for(Map.Entry<String, Event_Model> event : DataCache.getInstance().getAllEvents().entrySet()){
             System.out.println(event);
             LatLng location = new LatLng(event.getValue().getLatitude(), event.getValue().getLongitude());
@@ -110,10 +111,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                     .icon(BitmapDescriptorFactory.defaultMarker(MARKERS[eventTypes.indexOf(event.getValue().getEventType().toUpperCase())%10])));
             marker.setTag(event.getValue().getEventID());
         }
-        map.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                gmap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                 System.out.println("clicked");
                 currentEvent = DataCache.getInstance().getEvents((String)marker.getTag());
                 eventDetails.setText(textForMapFragment(currentEvent));
@@ -129,7 +131,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View v){
                 Intent intent = new Intent(getActivity(), PersonActivity.class);
-                intent.putExtra("PersonID", currentEvent.getPersonID());
+                intent.putExtra(PersonActivity.PERSON_ACTIVITY_ID, currentEvent.getPersonID());
                 startActivity(intent);
             }
         });
@@ -142,8 +144,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         String fatherID = child.getFatherID();
 
         if (motherID != null && !motherID.equals("")) {
-            momSideIDs.add(motherID);
-            momSideIDs.add(fatherID);
+            mothersSideIDs.add(motherID);
+            mothersSideIDs.add(fatherID);
             findMothersSide(motherID);
             findMothersSide(fatherID);
         }
@@ -155,8 +157,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         String fatherID = child.getFatherID();
 
         if (fatherID != null && !fatherID.equals("")) {
-            momSideIDs.add(motherID);
-            momSideIDs.add(fatherID);
+            mothersSideIDs.add(motherID);
+            mothersSideIDs.add(fatherID);
             findMothersSide(motherID);
             findMothersSide(fatherID);
         }
@@ -191,14 +193,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
             if (!Settings_Model.getInstance().isMothersSide() && !Settings_Model.getInstance().isFathersSide()) {
-                if (!momSideIDs.contains(event.getPersonID()) && !dadSideIDs.contains(event.getPersonID())) {
+                if (!mothersSideIDs.contains(event.getPersonID()) && !fathersSideIDs.contains(event.getPersonID())) {
                     filterMarkerByMF(gender, place, event, color);
                 }
             }
-            else if (!Settings_Model.getInstance().isMothersSide() && !momSideIDs.contains(event.getPersonID())) { //not showing mom side & doesn't contain id
+            else if (!Settings_Model.getInstance().isMothersSide() && !mothersSideIDs.contains(event.getPersonID())) { //not showing mom side & doesn't contain id
                 filterMarkerByMF(gender, place, event, color);
             }
-            else if (!Settings_Model.getInstance().isFathersSide() && !dadSideIDs.contains(event.getPersonID())) { //not showing dad side & doesn't contain id
+            else if (!Settings_Model.getInstance().isFathersSide() && !fathersSideIDs.contains(event.getPersonID())) { //not showing dad side & doesn't contain id
                 filterMarkerByMF(gender, place, event, color);
             }
             else if (Settings_Model.getInstance().isMothersSide() && Settings_Model.getInstance().isFathersSide()) { //showing both sides
