@@ -17,6 +17,7 @@ import com.example.familymap.Activities.SettingsActivity;
 import com.example.familymap.Models.DataCache;
 import com.example.familymap.Models.Event_Model;
 import com.example.familymap.Models.Person_Model;
+import com.example.familymap.Models.Settings_Model;
 import com.example.familymap.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -56,12 +57,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private TextView eventDetails;
     private ImageView imageDetails;
     private LinearLayout eventLinearLayout;
+    private String eventID;
+    private boolean fromEvent;
+    private ArrayList<String> dadSideIDs = new ArrayList<>();
+    private ArrayList<String> momSideIDs = new ArrayList<>();
+    private Person_Model user = null;
 
     Event_Model currentEvent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = DataCache.getInstance().getUser();
+        DataCache.getInstance().setPersonsEvents();
+        findMothersSide(user.getMotherID());
+        findFathersSide(user.getMotherID());
     }
 
 
@@ -125,12 +135,94 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         });
 
     }
+
+    private void findMothersSide(String personID) {
+        Person_Model child = DataCache.getInstance().getPersonMap().get(personID);
+        String motherID = child.getMotherID();
+        String fatherID = child.getFatherID();
+
+        if (motherID != null && !motherID.equals("")) {
+            momSideIDs.add(motherID);
+            momSideIDs.add(fatherID);
+            findMothersSide(motherID);
+            findMothersSide(fatherID);
+        }
+    }
+
+    private void findFathersSide(String personID) {
+        Person_Model child = DataCache.getInstance().getPersonMap().get(personID);
+        String motherID = child.getMotherID();
+        String fatherID = child.getFatherID();
+
+        if (fatherID != null && !fatherID.equals("")) {
+            momSideIDs.add(motherID);
+            momSideIDs.add(fatherID);
+            findMothersSide(motherID);
+            findMothersSide(fatherID);
+        }
+    }
+
     private String textForMapFragment(Event_Model event){
         StringBuilder sb = new StringBuilder();
         Person_Model person = DataCache.getInstance().getPerson(event.getPersonID());
         sb.append(person.getFirstName() + " " + person.getLastName() + '\n');
         sb.append(event.getEventType() + ": " + event.getCity() + ", " + event.getCountry() + " (" + event.getYear() + ")");
         return sb.toString();
+    }
+
+    public void setIDFromEventActivity(String eventID) {
+        this.eventID = eventID;
+        fromEvent = true;
+    }
+
+    private void addEventMarkers() {
+        for (Map.Entry<String, Event_Model> marker : DataCache.getInstance().getAllEvents().entrySet()) {
+            int color = 0;
+            Event_Model event = marker.getValue();
+            double lat = event.getLatitude();
+            double lon = event.getLongitude();
+            LatLng place = new LatLng(lat, lon);
+            String gender = DataCache.getInstance().getPerson(event.getPersonID()).getGender();
+//            DataCache.getInstance().setEventTypes();
+            List<String> types = new ArrayList<>(DataCache.getInstance().getEventTypes());
+            for (int i = 0; i < types.size(); i++) {
+                if (types.get(i).equals(event.getEventType().toUpperCase())) {
+                    color = i % MARKERS.length;
+                }
+            }
+            if (!Settings_Model.getInstance().isMothersSide() && !Settings_Model.getInstance().isFathersSide()) {
+                if (!momSideIDs.contains(event.getPersonID()) && !dadSideIDs.contains(event.getPersonID())) {
+                    filterMarkerByMF(gender, place, event, color);
+                }
+            }
+            else if (!Settings_Model.getInstance().isMothersSide() && !momSideIDs.contains(event.getPersonID())) { //not showing mom side & doesn't contain id
+                filterMarkerByMF(gender, place, event, color);
+            }
+            else if (!Settings_Model.getInstance().isFathersSide() && !dadSideIDs.contains(event.getPersonID())) { //not showing dad side & doesn't contain id
+                filterMarkerByMF(gender, place, event, color);
+            }
+            else if (Settings_Model.getInstance().isMothersSide() && Settings_Model.getInstance().isFathersSide()) { //showing both sides
+                filterMarkerByMF(gender, place, event, color);
+            }
+
+        }
+    }
+    private void filterMarkerByMF(String gender, LatLng place, Event_Model event, int color) {
+        Marker mapMarker;
+        if (Settings_Model.getInstance().isMaleEvents()) {
+            if (gender.toLowerCase().equals("m")) {
+                mapMarker = googleMap.addMarker(new MarkerOptions().position(place).title(event.getEventType())
+                        .icon(BitmapDescriptorFactory.defaultMarker(MARKERS[color])));
+                mapMarker.setTag(event.getEventID());
+            }
+        }
+        if (Settings_Model.getInstance().isFemaleEvents()) {
+            if (!gender.toLowerCase().equals("m")) {
+                mapMarker = googleMap.addMarker(new MarkerOptions().position(place).title(event.getEventType())
+                        .icon(BitmapDescriptorFactory.defaultMarker(MARKERS[color])));
+                mapMarker.setTag(event.getEventID());
+            }
+        }
     }
 
 

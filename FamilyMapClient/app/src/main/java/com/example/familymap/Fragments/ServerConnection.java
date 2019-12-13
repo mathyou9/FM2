@@ -104,6 +104,7 @@ public class ServerConnection extends AsyncTask<URL, Integer, Long> {
                 }
                 if(getData(result.getAuthorizationToken(), result.getPersonID())){
                     Person_Model person = dataCache.getPerson(result.getPersonID());
+                    DataCache.getInstance().setUser(person);
                     return new Object[]{true, "Welcome back " + person.getFirstName() + " " + person.getLastName() + "!"};
                 }
             } else {
@@ -157,6 +158,7 @@ public class ServerConnection extends AsyncTask<URL, Integer, Long> {
                 }
                 if(getData(result.getAuthorizationToken(), result.getPersonID())){
                     Person_Model person = dataCache.getPerson(result.getPersonID());
+                    DataCache.getInstance().setUser(person);
                     return new Object[]{true, "Welcome " + person.getFirstName() + " " + person.getLastName() + "!"};
                 }
             } else {
