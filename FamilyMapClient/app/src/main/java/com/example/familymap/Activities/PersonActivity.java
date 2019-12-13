@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
@@ -61,10 +62,31 @@ public class PersonActivity extends AppCompatActivity {
         PopulateExpandable();
         listAdapter = new ExpandableListAdapter(this, dataHeader, dataChild);
         expandableListView.setAdapter(listAdapter);
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                if (groupPosition == 0) {
+                    Intent intent = new Intent(PersonActivity.this, EventActivity.class);
+                    intent.putExtra("EventID", events[childPosition].getEventID());
+                    startActivity(intent);
+                }
+                if (groupPosition == 1) {
+                    if (childPosition == 0) {
+                        Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
+                        intent.putExtra("PersonID", spouse.getPersonID());
+                        startActivity(intent);
+                    }
+                    else {
+                        Intent intent = new Intent(PersonActivity.this, PersonActivity.class);
+                        intent.putExtra("PersonID", child.getPersonID());
+                        startActivity(intent);
+                    }
+                }
+                return false;
+            }
+        });
     }
     public void PopulateExpandable(){
-
-//        listAdapter = new ExpandableListAdapter(getApplicationContext(), data, dataHash );
         events = DataCache.getInstance().getEventsForIndividual().get(personID);
         dataHeader = new ArrayList<>();
         dataChild = new HashMap<>();
@@ -112,7 +134,6 @@ public class PersonActivity extends AppCompatActivity {
     }
 
     private void findFamily() {
-        //FIND SPOUSE
         Person_Model[] persons = DataCache.getInstance().getPersonArray();
 
         for (Person_Model value : persons) {
@@ -123,8 +144,6 @@ public class PersonActivity extends AppCompatActivity {
                 }
             }
         }
-
-        //FIND CHILD
         Person_Model[] children = DataCache.getInstance().getPersonArray();
 
         for (Person_Model value : children) {

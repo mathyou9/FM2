@@ -3,6 +3,7 @@ package com.example.familymap;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.familymap.Activities.SearchActivity;
 import com.example.familymap.Fragments.LoginFragment;
 import com.example.familymap.Activities.SettingsActivity;
 
@@ -51,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
+            this.startActivity(intent);
+            return true;
+        } else if(id == R.id.search){
+            Intent intent = new Intent(this, SearchActivity.class);
             this.startActivity(intent);
             return true;
         }

@@ -20,6 +20,10 @@ public class DataCache {
     private Person_Model[] personArray;
     private Event_Model[] eventArray;
     private Person_Model user;
+    private boolean isFromSettings = false;
+
+    private ArrayList<String> motherSideIDs;
+    private ArrayList<String> fatherSideIDs;
 
 
     private static DataCache instance;
@@ -117,5 +121,24 @@ public class DataCache {
     }
     public Person_Model getUser(){
         return user;
+    }
+    public void fromSettings(boolean isFromSettings){
+        this.isFromSettings = isFromSettings;
+    }
+
+    public ArrayList<String> getMothersSideIDs() {
+        return motherSideIDs;
+    }
+    void setMaternalSide(ArrayList<String> momSideIDs) {
+        this.motherSideIDs = momSideIDs;
+
+    }
+
+    public ArrayList<String> getFatherSideIDs() {
+        return fatherSideIDs;
+    }
+    void setFatherSideIDs(ArrayList<String> fatherSideIDs) {
+        this.fatherSideIDs = fatherSideIDs;
+
     }
 }
